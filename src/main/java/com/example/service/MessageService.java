@@ -63,8 +63,7 @@ public class MessageService {
         return this.messageRepository.findById(message_id);
     }
 
-    public Optional<Message> updateMessage(int message_id, String messageBody) throws JsonProcessingException{
-        Message message = GeneralUtil.extractMessageFromBody(messageBody);
+    public Optional<Message> updateMessage(int message_id, Message message){
 
         if(!ValidationUtil.isValidMessage(message)){
             return Optional.empty();
