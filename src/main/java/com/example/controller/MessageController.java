@@ -13,13 +13,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.entity.Message;
 import com.example.service.MessageService;
 
 @Controller
-@RequestMapping("/messages")
 public class MessageController {
 
     MessageService messageService;
@@ -27,15 +25,16 @@ public class MessageController {
         this.messageService = messageService;
     }
 
-    @GetMapping
+    @GetMapping("/messages")
     public ResponseEntity<List<Message>> findAll(){
         Optional<List<Message>> result = this.messageService.findAll();
         return ResponseEntity.status(HttpStatus.OK).body(result.get());
     }
 
-    @GetMapping("/{messageId}")
+    @GetMapping("/messages/{messageId}")
     public ResponseEntity<Message> findById(@PathVariable("messageId") int messageId){
         Optional<Message> result = this.messageService.findById(messageId);
+        if(result.isEmpty()) return ResponseEntity.status(HttpStatus.OK).build();
         return ResponseEntity.status(HttpStatus.OK).body(result.get());
     }
 
@@ -45,7 +44,7 @@ public class MessageController {
         return ResponseEntity.status(HttpStatus.OK).body(result.get());
     }
 
-    @PostMapping
+    @PostMapping("/messages")
     public ResponseEntity<Message> save(@RequestBody Message message){
         Optional<Message> result = this.messageService.save(message);
         
@@ -54,17 +53,22 @@ public class MessageController {
         return ResponseEntity.status(HttpStatus.OK).body(result.get());
     }
 
-    @PatchMapping("/{messageId}")
-    @PutMapping("/{messageId}")
+    @PatchMapping("/messages/{messageId}")
+    @PutMapping("/messages/{messageId}")
     public ResponseEntity<Message> updateMessage(@PathVariable("messageId") int messageId, @RequestBody Message message){
         Optional<Message> result = this.messageService.updateMessage(messageId, message);
         return ResponseEntity.status(HttpStatus.OK).body(result.get());
     }
     
-    @DeleteMapping("/{messageId}")
+    @DeleteMapping("/messages/{messageId}")
     public ResponseEntity<?> delete(@PathVariable("messageId") int messageId){
-        Optional<Message> result = this.messageService.delete(messageId);
-        return ResponseEntity.status(HttpStatus.OK).body(result.get());
+        int result = this.messageService.delete(messageId);
+
+        if(result == 0){
+            // no-row deleted
+            return ResponseEntity.status(HttpStatus.OK).build();
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(1);
     }
     
 }

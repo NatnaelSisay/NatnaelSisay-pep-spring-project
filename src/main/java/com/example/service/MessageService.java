@@ -11,8 +11,6 @@ import com.example.entity.Message;
 import com.example.repository.MessageRepository;
 import com.example.util.GeneralUtil;
 import com.example.util.ValidationUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 
 /**
  * Provide methods for Message class to interact with the database and perform buisness logic
@@ -40,15 +38,15 @@ public class MessageService {
         return result == null ? Optional.empty() : Optional.of(result);
     }
 
-    public Optional<Message> delete(int message_id){
+    public int delete(int message_id){
         Optional<Message> message = this.messageRepository.findById(message_id);
         
         if(message.isEmpty()){
-            return Optional.empty();
+            return 0; // can't delete empty value
         }
 
-        this.messageRepository.deleteById(message_id);
-        return message;
+        
+        return this.messageRepository.deleteById(message_id);
     }
 
     public Optional<List<Message>> findAccountMessages(int account_id){
