@@ -36,6 +36,6 @@ public class SocialMediaController {
             return ResponseEntity.status(401).build();
         }
 
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(200).body(loggedInAccount.get());
     }
 }
