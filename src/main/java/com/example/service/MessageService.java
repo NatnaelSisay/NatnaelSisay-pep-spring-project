@@ -44,10 +44,7 @@ public class MessageService {
     public int delete(int message_id){
         Optional<Message> message = this.messageRepository.findById(message_id);
         
-        if(message.isEmpty()){
-            return 0; // can't delete empty value
-        }
-
+        if(message.isEmpty()) return 0;
         
         return this.messageRepository.deleteById(message_id);
     }
