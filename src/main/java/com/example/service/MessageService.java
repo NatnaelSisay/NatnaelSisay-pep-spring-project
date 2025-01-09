@@ -4,6 +4,8 @@ package com.example.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.stereotype.Service;
 
 import com.example.entity.Account;
@@ -16,6 +18,7 @@ import com.example.util.ValidationUtil;
  * Provide methods for Message class to interact with the database and perform buisness logic
  */
 @Service
+@Transactional
 public class MessageService {
     MessageRepository messageRepository;
     AccountService accountService;
@@ -61,15 +64,11 @@ public class MessageService {
         return this.messageRepository.findById(message_id);
     }
 
-    public Optional<Message> updateMessage(int message_id, Message message){
-
+    public int updateMessage(int message_id, Message message){
         if(!ValidationUtil.isValidMessage(message)){
-            return Optional.empty();
+            return 0;
         }
 
-        int rowsUpdated = this.messageRepository.update(message_id, message.getMessageText());
-        if(rowsUpdated == 0) return Optional.empty();
-
-        return findById(message_id);
+        return this.messageRepository.updateMessage(message_id, message.getMessageText());
     }
 }

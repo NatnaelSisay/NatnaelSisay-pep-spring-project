@@ -55,9 +55,15 @@ public class MessageController {
 
     @PatchMapping("/messages/{messageId}")
     @PutMapping("/messages/{messageId}")
-    public ResponseEntity<Message> updateMessage(@PathVariable("messageId") int messageId, @RequestBody Message message){
-        Optional<Message> result = this.messageService.updateMessage(messageId, message);
-        return ResponseEntity.status(HttpStatus.OK).body(result.get());
+    public ResponseEntity<?> updateMessage(@PathVariable("messageId") int messageId, @RequestBody Message message){
+        int result = this.messageService.updateMessage(messageId, message);
+        
+        if(result == 0){
+            // no-row updated
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
     
     @DeleteMapping("/messages/{messageId}")
